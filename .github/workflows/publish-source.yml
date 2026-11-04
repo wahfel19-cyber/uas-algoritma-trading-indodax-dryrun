@@ -26,7 +26,7 @@ jobs:
                   relative = PurePosixPath(item.filename)
                   if relative.is_absolute() or ".." in relative.parts or not relative.parts:
                       raise SystemExit(f"Unsafe archive path: {item.filename}")
-                  if relative.parts[0] == ".git" or "__pycache__" in relative.parts:
+                  if relative.parts[0] in {".git", ".github"} or "__pycache__" in relative.parts:
                       continue
                   if relative.suffix.lower() in {".zip", ".pyc"}:
                       continue
