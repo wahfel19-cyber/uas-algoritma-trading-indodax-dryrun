@@ -41,3 +41,7 @@ Bot long-only untuk pasangan IDR Indodax. Ia memakai candle dan order book publi
 
 Lihat [strategy.md](strategy.md). Prinsip UTS Momentum Basket dipertahankan: momentum multi-horizon, filter SMA pendek/panjang, long-only, basket terbatas, cash sebagai penyangga, serta pembatasan likuiditas. Untuk kripto 1 jam, periode UTS saham (12/3 bulan dan rebalance 21 hari) diganti dengan momentum 24 jam/7 hari dan evaluasi candle per jam. Perubahan ini harus selesai dan dibekukan sebelum forward test.
 
+
+## Pembaruan operasional (5 November 2026)
+
+Deployment Production terbaru berstatus Ready setelah CRON_SECRET ditambahkan ke Vercel dan trigger deployment baru. Tick manual GitHub Actions run #4 berhasil; /api/metrics mencatat 1 panggilan, 1 candle diproses, 0 error API, 5 sinyal, 0 trade, dan equity tetap Rp100.000.000. Angka ini hanya menggambarkan tick tersebut, bukan forward test lengkap; 239 candle terjadwal belum diproses dan tidak ada trade yang diisi. Baris status sebelumnya yang menyatakan belum ada tick menggambarkan keadaan sebelum run #4.
