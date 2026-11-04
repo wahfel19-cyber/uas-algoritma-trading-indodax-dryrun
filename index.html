@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Indodax Dry-Run Bot Dashboard</title>
+  <style>
+    :root { color-scheme: dark; font-family: system-ui, Segoe UI, sans-serif; background: #0b1220; color: #e5edf8; }
+    body { margin: 0; padding: 24px; }
+    main { max-width: 1100px; margin: auto; }
+    h1, h2 { color: #9ed4ff; }
+    .note, section { background: #121d30; border: 1px solid #263751; border-radius: 12px; padding: 18px; margin: 16px 0; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; }
+    .card { background: #17243a; padding: 16px; border-radius: 9px; }
+    .label { font-size: 12px; color: #aab8ca; text-transform: uppercase; }
+    .value { font-size: 24px; font-weight: 700; margin-top: 8px; overflow-wrap: anywhere; }
+    table { border-collapse: collapse; width: 100%; margin-top: 12px; }
+    td, th { text-align: left; padding: 9px; border-bottom: 1px solid #263751; }
+    th { color: #b9d8fc; }
+    #status { color: #b9d8fc; }
+  </style>
+</head>
+<body>
+<main>
+  <h1>Indodax Dry-Run Trading Bot</h1>
+  <p id="status" class="note">Memuat metrik dari log bot…</p>
+  <section>
+    <h2>Operasional</h2>
+    <div id="operations" class="grid"></div>
+  </section>
+  <section>
+    <h2>Backtest vs forward</h2>
+    <div id="summary" class="grid"></div>
+    <table><thead><tr><th>Metrik</th><th>Backtest 3 tahun</th><th>Forward</th></tr></thead><tbody id="metrics"></tbody></table>
+    <p id="calibration-warning"></p>
+    <p id="forward-status"></p>
+    <p id="benchmark"></p>
+    <p id="gap"></p>
+  </section>
+  <section>
+    <h2>Median spread aktual forward</h2>
+    <table><thead><tr><th>Pair</th><th>Median spread</th></tr></thead><tbody id="spreads"></tbody></table>
+  </section>
+</main>
+<script>
+const pct = value => value == null ? "N/A" : `${(Number(value) * 100).toFixed(2)}%`;
+const idr = value => value == null ? "N/A" : `Rp ${Number(value).toLocaleString("id-ID", {maximumFractionDigits: 0})}`;
+const metricRows = [
+  ["Return total", "total_return", pct],
+  ["CAGR", "cagr", pct],
+  ["Maximum drawdown", "max_drawdown", pct],
+  ["Profit factor", "profit_factor", value => value === "infinite" ? "∞" : value == null ? "N/A" : Number(value).toFixed(2)],
+  ["Win rate", "win_rate", pct],
+  ["Rata-rata untung", "average_win_idr", idr],
+  ["Rata-rata rugi", "average_loss_idr", idr],
+  ["Jumlah trade", "trade_count", value => value == null ? "N/A" : String(value)],
+  ["Porsi biaya / laba kotor", "cost_share_of_gross_profit", pct]
+];
+function card(label, value) {
+  const element = document.createElement("div");
+  element.className = "card";
+  element.innerHTML = `<div class="label">${label}</div><div class="value">${value}</div>`;
+  return element;
+}
+async function load() {
+  const status = document.getElementById("status");
+  try {
+    const response = await fetch("/api/metrics", {cache: "no-store"});
+    if (!response.ok) throw new Error(`metrics endpoint returned HTTP ${response.status}`);
+    const data = await response.json();
+    status.textContent = data.data_available ? "Metrik dihitung dari log mentah dan summary backtest." : "Belum ada data aktual forward test atau backtest.";
+    const ops = data.operations || {};
+    for (const [label, value] of [
+      ["Candle terjadwal", ops.scheduled_candles],
+      ["Candle diproses", ops.processed_candles],
+      ["Uptime", pct(ops.uptime_fraction)],
+      ["Error API/operasional", ops.api_errors],
+      ["Pemakaian kill switch", ops.kill_switch_uses]
+    ]) document.getElementById("operations").append(card(label, value ?? "N/A"));
+    const backtest = data.backtest || {};
+    const forward = data.forward || {};
+    document.getElementById("calibration-warning").textContent =
+      backtest.calibration_timing === "late_after_forward_start_non_compliant"
+        ? "PERINGATAN: kalibrasi friction dilakukan setelah forward dimulai; hasil backtest ini eksploratif dan tidak memenuhi prosedur freeze."
+        : backtest.calibration_timing === "before_forward_start"
+          ? "Kalibrasi friction dilakukan sebelum forward start."
+          : "Status waktu kalibrasi belum tersedia.";
+    document.getElementById("forward-status").textContent =
+      forward.trade_count == null && !data.forward_signal_count
+        ? "Belum ada data forward test live."
+        : "Forward metrics dihitung dari log yang tersedia.";
+    for (const [key, label] of [["initial_equity_idr","Modal awal backtest"],["final_equity_idr","Ekuitas akhir backtest"]]) {
+      document.getElementById("summary").append(card(label, idr(backtest[key])));
+    }
+    document.getElementById("metrics").innerHTML = metricRows.map(([label, key, format]) =>
+      `<tr><th>${label}</th><td>${format(backtest[key])}</td><td>${key === "cagr" ? "Tidak ditampilkan (10 hari)" : format(forward[key])}</td></tr>`
+    ).join("");
+    document.getElementById("benchmark").textContent = `Buy-and-hold BTC/IDR: ${pct(data.benchmark_btc_return)}`;
+    const windowReturn = backtest.forward_window?.total_return;
+    document.getElementById("gap").textContent = `Backtest 10 hari: ${pct(windowReturn)}; gap forward − backtest: ${pct(data.gap_forward_vs_backtest_return)}`;
+    const spreads = data.spread_medians || {};
+    document.getElementById("spreads").innerHTML = Object.entries(spreads).map(([symbol, value]) => `<tr><th>${symbol}</th><td>${pct(value)}</td></tr>`).join("") || "<tr><td colspan=\"2\">Belum tersedia</td></tr>";
+  } catch (error) {
+    status.textContent = `Dashboard gagal memuat data: ${error.message}`;
+  }
+}
+load();
+setInterval(load, 60_000);
+</script>
+</body>
+</html>

@@ -1,0 +1,80 @@
+{
+  "initial_equity_idr": 100000000.0,
+  "final_equity_idr": 48499921.58946068,
+  "total_return": -0.5150007841053932,
+  "max_drawdown": 0.5731316199767517,
+  "cagr": -0.21440413175455542,
+  "profit_factor": 0.7353847134810837,
+  "win_rate": 0.21306122448979592,
+  "average_win_idr": 548361.6209991168,
+  "average_loss_idr": -201890.52021920017,
+  "trade_count": 1225,
+  "gross_profit_idr": 169055938.61492106,
+  "fees_idr": 88144311.44800161,
+  "spread_cost_estimate_idr": 5827382.19375502,
+  "slippage_cost_estimate_idr": 10659277.865854165,
+  "cost_share_of_gross_profit": 0.6189133157039888,
+  "initial_capital_idr": 100000000.0,
+  "window_start": "2023-11-04T23:00:00+00:00",
+  "window_end": "2026-11-04T05:00:00+00:00",
+  "universe": [
+    "BTCIDR",
+    "ETHIDR",
+    "XRPIDR",
+    "DOGEIDR",
+    "SOLIDR"
+  ],
+  "fee_source": {
+    "pairs_api": "https://indodax.com/api/pairs",
+    "official_all_in": "https://help.indodax.com/hc/id/articles/4416646599705-Rincian-Biaya-Transaksi-di-INDODAX",
+    "accessed_date": "2026-11-03",
+    "buy_taker_fee_floor": 0.0020555,
+    "sell_taker_fee_floor": 0.0041555
+  },
+  "calibration": {
+    "BTCIDR": {
+      "spread_fraction": 2.10964604007132e-06,
+      "slippage_fraction": 0.0,
+      "fee_buy": 0.0020555,
+      "fee_sell": 0.0041555,
+      "snapshot_count": 1.0
+    },
+    "ETHIDR": {
+      "spread_fraction": 0.00016618986004439642,
+      "slippage_fraction": 5.423661921797595e-05,
+      "fee_buy": 0.0020555,
+      "fee_sell": 0.0041555,
+      "snapshot_count": 1.0
+    },
+    "XRPIDR": {
+      "spread_fraction": 0.001155253192991464,
+      "slippage_fraction": 0.00023140147837282971,
+      "fee_buy": 0.0020555,
+      "fee_sell": 0.0041555,
+      "snapshot_count": 1.0
+    },
+    "DOGEIDR": {
+      "spread_fraction": 0.0007344840249724568,
+      "slippage_fraction": 0.0006792250694009118,
+      "fee_buy": 0.0020555,
+      "fee_sell": 0.0041555,
+      "snapshot_count": 1.0
+    },
+    "SOLIDR": {
+      "spread_fraction": 8.027705026700973e-05,
+      "slippage_fraction": 0.000593688323778779,
+      "fee_buy": 0.0020555,
+      "fee_sell": 0.0041555,
+      "snapshot_count": 1.0
+    }
+  },
+  "calibration_snapshot_cutoff_utc": "2026-11-04T11:00:00+00:00",
+  "calibration_timing": "late_after_forward_start_non_compliant",
+  "benchmark_btc_buy_hold": {
+    "return": 1.53019038337654,
+    "start_price": 550370580.5429455,
+    "end_price": 1401227521.9513946
+  },
+  "source_data": "Indodax history_v2 candles and measured order-book snapshots",
+  "uses_synthetic_data": false
+}

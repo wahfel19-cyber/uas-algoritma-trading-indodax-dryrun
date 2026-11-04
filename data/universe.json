@@ -1,0 +1,12 @@
+{
+  "symbols": [
+    "BTCIDR",
+    "ETHIDR",
+    "XRPIDR",
+    "DOGEIDR",
+    "SOLIDR"
+  ],
+  "selection_period_start_utc": "2023-10-05T23:00:00+00:00",
+  "selection_period_end_utc": "2023-11-04T23:00:00+00:00",
+  "selection_method": "top 5 candidate pairs by total quote turnover during the first 30 days; selection period excluded from backtest"
+}

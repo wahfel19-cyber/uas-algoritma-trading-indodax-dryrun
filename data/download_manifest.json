@@ -1,0 +1,114 @@
+{
+  "source": "Indodax public tradingview/history_v2",
+  "source_url": "https://indodax.com/tradingview/history_v2",
+  "downloaded_at_utc": "2026-11-04T11:01:42.488911+00:00",
+  "exchange_server_time_utc": "2026-11-04T11:01:43+00:00",
+  "timeframe_seconds": 3600,
+  "requested_start_utc": "2023-10-05T23:00:00+00:00",
+  "requested_end_utc": "2026-11-04T05:00:00+00:00",
+  "selection_period_days": 30,
+  "universe_selection_method": "top 5 candidate pairs by total quote turnover during the first 30 days; selection period excluded from backtest",
+  "symbols": {
+    "BTCIDR": {
+      "bars": 27007,
+      "first_bar_utc": "2023-10-05T23:00:00+00:00",
+      "last_bar_utc": "2026-11-04T05:00:00+00:00",
+      "first_30d_quote_turnover_idr": 500740884878.18195,
+      "initial_30d_median_hourly_turnover_idr": 346544937.4684
+    },
+    "ETHIDR": {
+      "bars": 27007,
+      "first_bar_utc": "2023-10-05T23:00:00+00:00",
+      "last_bar_utc": "2026-11-04T05:00:00+00:00",
+      "first_30d_quote_turnover_idr": 142894950507.21872,
+      "initial_30d_median_hourly_turnover_idr": 98285758.76252
+    },
+    "BNBIDR": {
+      "bars": 27007,
+      "first_bar_utc": "2023-10-05T23:00:00+00:00",
+      "last_bar_utc": "2026-11-04T05:00:00+00:00",
+      "first_30d_quote_turnover_idr": 24672231141.853367,
+      "initial_30d_median_hourly_turnover_idr": 18917335.9446347
+    },
+    "SOLIDR": {
+      "bars": 27007,
+      "first_bar_utc": "2023-10-05T23:00:00+00:00",
+      "last_bar_utc": "2026-11-04T05:00:00+00:00",
+      "first_30d_quote_turnover_idr": 50866213724.71281,
+      "initial_30d_median_hourly_turnover_idr": 24923051.406749282
+    },
+    "XRPIDR": {
+      "bars": 27007,
+      "first_bar_utc": "2023-10-05T23:00:00+00:00",
+      "last_bar_utc": "2026-11-04T05:00:00+00:00",
+      "first_30d_quote_turnover_idr": 117750423651.34612,
+      "initial_30d_median_hourly_turnover_idr": 83980381.32676594
+    },
+    "ADAIDR": {
+      "bars": 27007,
+      "first_bar_utc": "2023-10-05T23:00:00+00:00",
+      "last_bar_utc": "2026-11-04T05:00:00+00:00",
+      "first_30d_quote_turnover_idr": 35452045112.39669,
+      "initial_30d_median_hourly_turnover_idr": 22736376.52189659
+    },
+    "DOGEIDR": {
+      "bars": 27007,
+      "first_bar_utc": "2023-10-05T23:00:00+00:00",
+      "last_bar_utc": "2026-11-04T05:00:00+00:00",
+      "first_30d_quote_turnover_idr": 71589550393.20055,
+      "initial_30d_median_hourly_turnover_idr": 46873836.087482125
+    },
+    "LINKIDR": {
+      "bars": 27007,
+      "first_bar_utc": "2023-10-05T23:00:00+00:00",
+      "last_bar_utc": "2026-11-04T05:00:00+00:00",
+      "first_30d_quote_turnover_idr": 13722866336.631935,
+      "initial_30d_median_hourly_turnover_idr": 2711873.12746016
+    }
+  },
+  "selection_period_start_utc": "2023-10-05T23:00:00+00:00",
+  "selection_period_end_utc": "2023-11-04T23:00:00+00:00",
+  "backtest_start_utc": "2023-11-04T23:00:00+00:00",
+  "backtest_end_utc": "2026-11-04T05:00:00+00:00",
+  "selected_symbols": [
+    "BTCIDR",
+    "ETHIDR",
+    "XRPIDR",
+    "DOGEIDR",
+    "SOLIDR"
+  ],
+  "liquidity_ranking": [
+    {
+      "symbol": "BTCIDR",
+      "first_30d_quote_turnover_idr": 500740884878.18195
+    },
+    {
+      "symbol": "ETHIDR",
+      "first_30d_quote_turnover_idr": 142894950507.21872
+    },
+    {
+      "symbol": "XRPIDR",
+      "first_30d_quote_turnover_idr": 117750423651.34612
+    },
+    {
+      "symbol": "DOGEIDR",
+      "first_30d_quote_turnover_idr": 71589550393.20055
+    },
+    {
+      "symbol": "SOLIDR",
+      "first_30d_quote_turnover_idr": 50866213724.71281
+    },
+    {
+      "symbol": "ADAIDR",
+      "first_30d_quote_turnover_idr": 35452045112.39669
+    },
+    {
+      "symbol": "BNBIDR",
+      "first_30d_quote_turnover_idr": 24672231141.853367
+    },
+    {
+      "symbol": "LINKIDR",
+      "first_30d_quote_turnover_idr": 13722866336.631935
+    }
+  ]
+}
