@@ -1,0 +1,54 @@
+name: Restore deployable source
+on:
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  restore-source:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Extract project files from the submission archive
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path, PurePosixPath
+          from zipfile import ZipFile
+
+          root = Path.cwd().resolve()
+          archive = root / "indodax-dryrun-bot-uas-submission-compact-with-git.zip"
+          if not archive.is_file():
+              raise SystemExit(f"Required archive not found: {archive.name}")
+
+          with ZipFile(archive) as package:
+              restored = 0
+              for item in package.infolist():
+                  relative = PurePosixPath(item.filename)
+                  if relative.is_absolute() or ".." in relative.parts or not relative.parts:
+                      raise SystemExit(f"Unsafe archive path: {item.filename}")
+                  if relative.parts[0] == ".git" or "__pycache__" in relative.parts:
+                      continue
+                  if relative.suffix.lower() in {".zip", ".pyc"}:
+                      continue
+                  destination = root.joinpath(*relative.parts).resolve()
+                  if destination != root and root not in destination.parents:
+                      raise SystemExit(f"Archive path escapes repository: {item.filename}")
+                  if item.is_dir():
+                      destination.mkdir(parents=True, exist_ok=True)
+                  else:
+                      destination.parent.mkdir(parents=True, exist_ok=True)
+                      destination.write_bytes(package.read(item))
+                      restored += 1
+          print(f"Restored {restored} project files from the submitted archive")
+          PY
+      - name: Commit recovered source to main
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A -- . ':!*.zip'
+          if git diff --cached --quiet; then
+            echo "No source changes to publish"
+            exit 1
+          fi
+          git commit -m "Publish deployable project source"
+          git push origin HEAD:main
