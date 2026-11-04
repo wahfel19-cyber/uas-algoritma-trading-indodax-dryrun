@@ -1,0 +1,27 @@
+name: Publish Python API route handlers
+on:
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  repair-api:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Define handler classes for each API route
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          handler = "from api.tick import handler as BaseHandler\n\n\nclass handler(BaseHandler):\n    pass\n"
+          for endpoint in ("health", "metrics", "control", "export"):
+              Path("api", f"{endpoint}.py").write_text(handler, encoding="utf-8")
+          PY
+      - name: Commit and publish API route fixes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add api/health.py api/metrics.py api/control.py api/export.py
+          git commit -m "Define Python API handlers for each route"
+          git push origin HEAD:main
