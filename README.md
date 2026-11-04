@@ -111,3 +111,8 @@ File mentah disimpan per jenis di `logs/raw/` (calls, candles, controls, equity,
 ## Refleksi akhir
 
 Isi `reflection.md` setelah forward selesai memakai angka yang dihasilkan dari log dan backtest 10 hari. Bandingkan candle sinyal, waktu panggilan, spread, impact, fee, missed/late candles, error, serta gap return. Jangan mengarang sebab atau angka sebelum data tersedia.
+
+
+## Status operasional (4 November 2026, 22.30 WIB)
+
+Workflow hourly sudah tersimpan di commit 815b977. Uji dispatch berhasil, tetapi tick dilewati karena secrets GitHub belum diatur; belum ada tick maupun log forward. /api/health merespons status ok, sedangkan /api/metrics masih HTTP 503 karena kredensial Upstash belum dikonfigurasi. Forward test 10 hari sesuai jadwal tidak dapat dipenuhi jika baru dimulai setelah 4 November 2026 pukul 12.00 WIB.
