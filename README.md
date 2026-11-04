@@ -1,47 +1,49 @@
 # Indodax dry-run bot (UAS Algorithmic Trading)
 
+Bot long-only untuk pasangan IDR Indodax. Menggunakan candle dan order book publik, mensimulasikan fill dengan level bid/ask, menyimpan state dan log di Upstash Redis, serta menjalankan tick terjadwal melalui GitHub Actions. Tidak menggunakan endpoint trading privat, API key Indodax, uang sungguhan, atau leverage.
 
+> **Integritas hasil:** data pasar berasal dari Indodax. Jangan mengarang atau mengubah log maupun angka dashboard secara manual. Nilai forward hanya mencerminkan panggilan bot yang benar-benar tercatat.
 
+## Status dan batasan UAS
 
-Bot long-only untuk pasangan IDR Indodax. Ia memakai candle dan order book publik, mensimulasikan fill dengan menghabiskan level bid/ask, menyimpan state/log di Upstash Redis, dan berjalan melalui GitHub Actions setiap jam pada menit ke-7. Tidak ada endpoint trading privat, API key Indodax, uang sungguhan, atau leverage.
+- Freeze diwajibkan pada 4 November 2026 pukul 12.00 WIB. Riwayat repository dibuat setelah waktu itu sehingga **tidak membuktikan freeze tepat waktu**.
+- Jendela UAS yang ditentukan: 4 November 2026 pukul 12.00 WIB sampai 14 November 2026 pukul 12.00 WIB. Bot baru berhasil menerima tick setelah jadwal dimulai; hasil ini tidak dapat diklaim sebagai forward test 10 hari lengkap sesuai jadwal.
+- Data historis yang tersedia: 27.007 candle 1 jam dari Indodax untuk setiap delapan kandidat, 5 Oktober 2023 23.00 UTC sampai 4 November 2026 05.00 UTC. Universe top-5 dipilih berdasarkan turnover 30 hari awal: BTCIDR, ETHIDR, XRPIDR, DOGEIDR, SOLIDR.
+- Backtest historis eksploratif: modal Rp100.000.000; ekuitas akhir Rp48.499.921,59; return -51,50%; max drawdown 57,31%; CAGR -21,44%; 1.225 trade; win rate 21,31%; profit factor 0,735; benchmark buy-and-hold BTC/IDR +153,02%.
+- Kalibrasi friction memakai satu snapshot order book per pair, direkam setelah forward dimulai. Summary menandainya `late_after_forward_start_non_compliant`; hasil backtest ini **bukan bukti kepatuhan terhadap prosedur freeze**.
+- Vercel Production dan Upstash Free terhubung. Pemeriksaan `/api/health` berhasil: API publik Indodax terjangkau dan lima pair tersedia. Dashboard live: https://uas-algoritma-trading-indodax-dryru.vercel.app/ .
+- GitHub Actions run #4 berhasil secara manual pada 5 November 2026 sekitar 04.02 WIB. Metrik saat pemeriksaan: 1 panggilan, 1 candle diproses, 5 sinyal, 0 trade, 0 error API, equity simulasi Rp100.000.000. Ini hanya satu tick; bukan hasil 10 hari. Run #3 sebelumnya gagal karena secret belum tersedia saat deployment dibuat.
+- Workflow dijadwalkan setiap jam pada menit ke-7 UTC. Tick pertama yang berhasil tidak mencakup candle-candle sebelum bot aktif; jangan mengisi periode yang terlewat dengan data buatan.
+- Perbaikan konfigurasi Upstash dibuat setelah batas freeze pada commit `855b3bc0b8f0b3d0a19f76b908153234a42bee5e`. Perubahan tersebut memperbaiki integrasi, tidak mengubah atau membuktikan freeze strategi.
+- Repository publik: https://github.com/wahfel19-cyber/uas-algoritma-trading-indodax-dryrun .
 
+Bot long-only untuk pasangan IDR Indodax. Menggunakan candle dan order book publik, mensimulasikan fill dengan level bid/ask, menyimpan state dan log di Upstash Redis, serta menjalankan tick terjadwal melalui GitHub Actions. Tidak menggunakan endpoint trading privat, API key Indodax, uang sungguhan, atau leverage.
 
+> **Integritas hasil:** data pasar berasal dari Indodax. Jangan mengarang atau mengubah log maupun angka dashboard secara manual. Nilai forward hanya mencerminkan panggilan bot yang benar-benar tercatat.
 
+## Status dan batasan UAS
 
-> **Integritas hasil:** repo ini tidak berisi angka backtest/forward rekaan. Backtest hanya menerima data `history_v2` asli dan snapshot order book mentah. Forward metrics baru ada setelah bot menerima panggilan sungguhan. Jangan mengisi atau mengubah log/angka dashboard secara manual.
+- Freeze diwajibkan pada 4 November 2026 pukul 12.00 WIB. Riwayat repository dibuat setelah waktu itu sehingga **tidak membuktikan freeze tepat waktu**.
+- Jendela UAS yang ditentukan: 4 November 2026 pukul 12.00 WIB sampai 14 November 2026 pukul 12.00 WIB. Bot baru berhasil menerima tick setelah jadwal dimulai; hasil ini tidak dapat diklaim sebagai forward test 10 hari lengkap sesuai jadwal.
+- Data historis yang tersedia: 27.007 candle 1 jam dari Indodax untuk setiap delapan kandidat, 5 Oktober 2023 23.00 UTC sampai 4 November 2026 05.00 UTC. Universe top-5 dipilih berdasarkan turnover 30 hari awal: BTCIDR, ETHIDR, XRPIDR, DOGEIDR, SOLIDR.
+- Backtest historis eksploratif: modal Rp100.000.000; ekuitas akhir Rp48.499.921,59; return -51,50%; max drawdown 57,31%; CAGR -21,44%; 1.225 trade; win rate 21,31%; profit factor 0,735; benchmark buy-and-hold BTC/IDR +153,02%.
+- Kalibrasi friction memakai satu snapshot order book per pair, direkam setelah forward dimulai. Summary menandainya `late_after_forward_start_non_compliant`; hasil backtest ini **bukan bukti kepatuhan terhadap prosedur freeze**.
+- Vercel Production dan Upstash Free terhubung. Pemeriksaan `/api/health` berhasil: API publik Indodax terjangkau dan lima pair tersedia. Dashboard live: https://uas-algoritma-trading-indodax-dryru.vercel.app/ .
+- GitHub Actions run #4 berhasil secara manual pada 5 November 2026 sekitar 04.02 WIB. Metrik saat pemeriksaan: 1 panggilan, 1 candle diproses, 5 sinyal, 0 trade, 0 error API, equity simulasi Rp100.000.000. Ini hanya satu tick; bukan hasil 10 hari. Run #3 sebelumnya gagal karena secret belum tersedia saat deployment dibuat.
+- Workflow dijadwalkan setiap jam pada menit ke-7 UTC. Tick pertama yang berhasil tidak mencakup candle-candle sebelum bot aktif; jangan mengisi periode yang terlewat dengan data buatan.
+- Perbaikan konfigurasi Upstash dibuat setelah batas freeze pada commit `855b3bc0b8f0b3d0a19f76b908153234a42bee5e`. Perubahan tersebut memperbaiki integrasi, tidak mengubah atau membuktikan freeze strategi.
+- Repository publik: https://github.com/wahfel19-cyber/uas-algoritma-trading-indodax-dryrun .
+- Raw log tersimpan di Redis. Sebelum pengumpulan akhir, ekspor log dengan `python scripts\export_logs.py`, hitung ulang dashboard dengan `python scripts\recompute_dashboard.py`, lalu periksa hasilnya. Belum ada hasil akhir perbandingan backtest 10 hari dengan jendela forward yang sama.
 
+## Strategi
 
+Lihat [strategy.md](strategy.md). Prinsip UTS Momentum Basket dipertahankan: momentum multi-horizon, filter SMA pendek/panjang, long-only, basket terbatas, cash sebagai penyangga, serta pembatasan likuiditas. Untuk kripto 1 jam, periode UTS saham (12/3 bulan dan rebalance 21 hari) diganti dengan momentum 24 jam/7 hari dan evaluasi candle per jam.
 
+## Operasi dan keamanan
 
-## Status submission
-
-
-
-
-- Repo publik dibuat pada 4 November 2026 setelah batas freeze pukul 12.00 WIB. Riwayat commit tidak membuktikan freeze tepat waktu; jangan klaim sebaliknya.
-- Saat publikasi awal, data backtest tiga tahun, deployment Vercel, dan log forward test faktual belum tersedia.
-- Strategi, aturan risk, kode, dan universe harus dibekukan dalam commit pada atau sebelum **4 November 2026 pukul 12.00 WIB**.
-- Forward window: **4 November 2026 pukul 12.00 WIB – 14 November 2026 pukul 12.00 WIB**.
-- Pemulihan terlambat: downloader kini mengambil 27.007 candle/jam asli untuk masing-masing delapan kandidat dari 5 Oktober 2023 23.00 UTC sampai 4 November 2026 05.00 UTC; universe top-5 ditetapkan dari turnover 30 hari awal.
-- Snapshot order book pertama baru direkam 4 November 2026 10.59.48 UTC, sesudah forward dimulai. Backtest yang dihitung memakai satu snapshot per pair tersebut sebagai kalibrasi terlambat, ditandai `late_after_forward_start_non_compliant`; hasilnya eksploratif dan bukan bukti kepatuhan terhadap freeze.
-- Deploy Vercel sudah Ready dan terhubung ke Upstash (Free); `/api/health` mengonfirmasi API publik Indodax terjangkau dan lima pair tersedia. `/api/metrics` menampilkan hasil backtest historis, tetapi forward masih kosong dan `operations.calls` = 0.
-- Uji workflow manual #3 pada 5 November 2026 gagal: deployment yang dipanggil belum memuat `CRON_SECRET` (HTTP 503). Secret sudah ditambahkan ke Vercel Production dan GitHub Actions. Redeploy perlu dilakukan setelah variabel tersedia, lalu workflow harus diuji ulang; belum ada tick maupun log forward yang berhasil.
-- Deployment aktif saat dokumentasi ini diperbarui: commit `855b3bc0b8f0b3d0a19f76b908153234a42bee5e`. Perubahan ini adalah perbaikan konfigurasi setelah batas freeze, bukan bukti freeze tepat waktu.
-- Satu jam Indodax diidentifikasi oleh waktu buka candle UTC. Panggilan pertama setelah 05.00 UTC memproses candle 04.00 UTC yang baru tertutup.
-- Setelah freeze, jangan ubah strategi, parameter, atau universe. Perbaikan bug non-strategi perlu dicatat dan di-commit tanpa menulis ulang riwayat.
-- Commit hash, waktu commit, link repo publik, link deployment, dan refleksi final harus ditambahkan setelah bukti tersebut benar-benar ada. Tidak ada hash, URL, atau hasil deploy palsu dalam repo ini.
-
-
-
-
-## Aturan strategi
-
-
-
-
-Lihat [strategy.md](strategy.md). Prinsip UTS Momentum Basket dipertahankan: momentum multi-horizon, filter SMA pendek/panjang, long-only, basket terbatas, cash sebagai penyangga, serta pembatasan likuiditas. Untuk kripto 1 jam, periode UTS saham (12/3 bulan dan rebalance 21 hari) diganti dengan momentum 24 jam/7 hari dan evaluasi candle per jam. Perubahan ini harus selesai dan dibekukan sebelum forward test.
-
-
-## Pembaruan operasional (5 November 2026)
-
-Deployment Production terbaru berstatus Ready setelah CRON_SECRET ditambahkan ke Vercel dan trigger deployment baru. Tick manual GitHub Actions run #4 berhasil; /api/metrics mencatat 1 panggilan, 1 candle diproses, 0 error API, 5 sinyal, 0 trade, dan equity tetap Rp100.000.000. Angka ini hanya menggambarkan tick tersebut, bukan forward test lengkap; 239 candle terjadwal belum diproses dan tidak ada trade yang diisi. Baris status sebelumnya yang menyatakan belum ada tick menggambarkan keadaan sebelum run #4.
+- Hanya endpoint publik Indodax yang dipanggil. Tidak ada API key akun atau order sungguhan.
+- Rahasia hanya berada di environment Vercel/GitHub; jangan commit `.env`, token, atau URL berisi kredensial.
+- Fungsi sinyal yang sama dipakai bot dan simulator. Retry dibatasi; error/data invalid dicatat dan pair tidak diperdagangkan.
+- Tiap candle hanya diproses sekali per pair; daily loss limit WIB 2%, maksimum tiga posisi dan 15% equity per posisi.
+- Tes lokal: `python -m unittest discover -s tests -v`.
+- Refleksi pada [reflection.md](reflection.md) masih sementara dan tidak menyatakan kesimpulan final forward test.
