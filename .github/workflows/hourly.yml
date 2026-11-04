@@ -17,10 +17,11 @@ jobs:
       BOT_URL: ${{ secrets.VERCEL_BOT_URL }}
       CRON_SECRET: ${{ secrets.CRON_SECRET }}
     steps:
-      - name: Skip until secrets are configured
+      - name: Fail if required secrets are missing
         if: ${{ env.BOT_URL == '' || env.CRON_SECRET == '' }}
         run: |
-          echo "Skipped: configure VERCEL_BOT_URL and CRON_SECRET repository secrets to enable dry-run ticks."
+          echo "::error::Configure VERCEL_BOT_URL and CRON_SECRET repository secrets before running dry-run ticks."
+          exit 1
       - name: Run dry-run tick
         if: ${{ env.BOT_URL != '' && env.CRON_SECRET != '' }}
         run: |
