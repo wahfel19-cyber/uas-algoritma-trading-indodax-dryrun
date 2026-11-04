@@ -1,3 +1,5 @@
-from api.tick import handler
+from api.tick import handler as BaseHandler
 
-__all__ = ["handler"]
+
+class handler(BaseHandler):
+    pass
