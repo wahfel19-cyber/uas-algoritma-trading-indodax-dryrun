@@ -19,7 +19,9 @@ jobs:
     steps:
       - name: Skip until secrets are configured
         if: ${{ env.BOT_URL == '' || env.CRON_SECRET == '' }}
-        run: echo "Skipped: configure VERCEL_BOT_URL and CRON_SECRET repository secrets to enable dry-run ticks."
+        run: |
+          echo "Skipped: configure VERCEL_BOT_URL and CRON_SECRET repository secrets to enable dry-run ticks."
       - name: Run dry-run tick
         if: ${{ env.BOT_URL != '' && env.CRON_SECRET != '' }}
-        run: curl --fail-with-body --silent --show-error --max-time 240 --request POST --header "Authorization: Bearer ${CRON_SECRET}" "${BOT_URL}/api/tick"
+        run: |
+          curl --fail-with-body --silent --show-error --max-time 240 --request POST --header "Authorization: Bearer ${CRON_SECRET}" "${BOT_URL}/api/tick"
